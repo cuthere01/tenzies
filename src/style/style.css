@@ -241,6 +241,7 @@ section {
   font-weight: 700;
   margin: 0;
   color: #fff;
+  text-align: center;
 }
 .start p {
   font-size: 1.5rem;
@@ -293,5 +294,44 @@ section {
   }
   100% {
     opacity: 0;
+  }
+}
+
+@media (max-width: 769px) {
+  .start h2 {
+    font-size: 3.5rem;
+  }
+  .start p {
+    font-size: 2rem;
+  }
+  .start__mode {
+    gap: 2.5rem;
+  }
+  .main-button {
+    font-size: 2.5rem;
+    padding: 1rem 2.5rem;
+  }
+  .game h2 {
+    font-size: 3.5rem;
+  }
+  .game p {
+    font-size: 2rem;
+  }
+  .game__block {
+    gap: 3rem;
+    padding: 2.5rem;
+  }
+  .game__field {
+    gap: 2.5rem;
+  }
+  .die {
+    width: 6rem;
+    height: 6rem;
+    font-size: 3.5rem;
+  }
+  .timer {
+    font-size: 11rem;
+    margin-top: -14rem;
+    margin-bottom: 3rem;
   }
 }/*# sourceMappingURL=style.css.map */

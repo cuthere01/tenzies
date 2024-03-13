@@ -231,6 +231,7 @@ section{
         font-weight: 700;
         margin: 0;
         color: #fff;
+        text-align: center;
     }
     p{
         font-size: 1.5rem;
@@ -282,5 +283,48 @@ section{
         100% { 
             opacity: 0;
         }
+    }
+}
+
+@media (max-width: 769px){
+    .start{
+        h2{
+            font-size: 3.5rem;
+        }
+        p{
+            font-size: 2rem;
+        }
+        &__mode{
+            gap: 2.5rem;
+        }
+    }
+    .main-button{
+        font-size: 2.5rem;
+        padding: 1rem 2.5rem;
+    }
+    .game{
+        h2{
+            font-size: 3.5rem;
+        }
+        p{
+            font-size: 2rem;
+        }
+        &__block{
+            gap: 3rem;
+            padding: 2.5rem 
+        }
+        &__field{
+            gap: 2.5rem;
+        }
+    }
+    .die {
+        width: 6rem;
+        height: 6rem;
+        font-size: 3.5rem;
+    }
+    .timer{
+        font-size: 11rem;
+        margin-top: -14rem;
+        margin-bottom: 3rem;
     }
 }
