@@ -7,7 +7,7 @@ export default{
             "number": 1,
             "dices": 4,
             "cols": 2,
-            "time": 5
+            "time": 3
         },
         {
             "number": 2,
