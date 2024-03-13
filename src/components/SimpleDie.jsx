@@ -1,4 +1,4 @@
-export default function Die(props){
+export default function SimpleDie(props){
     return (
         <div 
             className={props.isHeld? "die active" : "die"}

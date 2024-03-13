@@ -1,96 +1,60 @@
 
 import React from 'react';
-import Die from "./components/Die"
-import { nanoid } from 'nanoid';
-import useWindowSize from 'react-use/lib/useWindowSize'
-import Confetti from 'react-confetti'
+import SimpleMode from './components/SimpleMode';
+import ClassicMode from './components/ClassicMode'
 
 export default function App(){
 
-    //Клетки
-    const [dices, setDices] = React.useState(allNewDices())
+    //Gamemode
+    const [gamemode, setGamemode] = React.useState(false)
 
-    //Прогресс игры
-    const [tenzies, setTenzies] = React.useState(false)
-
-    //Следит за прогрессом игры
-    React.useEffect(()=>{
-        const targetVal = dices[0].value
-        const allHeld = dices.every(die => die.isHeld)
-        const allSameValue = dices.every(die => die.value === targetVal)
-        if(allHeld && allSameValue){
-            setTenzies(true)
+    function selectGamemode(){
+        switch(gamemode){
+            case 1:
+                return (
+                    <SimpleMode/>
+                )
+            case 2:
+                return (
+                    <ClassicMode/>
+                )
+            default:
+                return (
+                    <div className="container">
+                        <section className="start">
+                            <h2>Welcome to Tenzies!</h2>
+                            <p>Select gamemode</p>
+                            <div className="start__mode">
+                                <button className="main-button" onClick={() => setGamemode(1)}>
+                                    Simple
+                                </button>
+                                <button className="main-button" onClick={() => setGamemode(2)}>
+                                    Classic
+                                </button>
+                            </div>
+                        </section>
+                    </div>
+                )
         }
-    }, [dices])
-
-    //Генерирует новую клетку
-    function genNewDie(){
-        return ({
-            value: Math.floor(Math.random()*6+1),
-            isHeld: false,
-            id: nanoid()
-        })
     }
-
-    //Создает 10 новых клеток
-    function allNewDices(){
-        const newDices = []
-        for(let i=0; i<10; i++){
-            newDices.push(genNewDie())
-        }
-        return newDices
-    }
-
-    //Меняет статус клетки с id
-    function holdDice(id){
-        setDices(prevDices => prevDices.map(die => (die.id === id? {...die, isHeld: !die.isHeld} : die)))
-    }
-
-    //Записывает новые клетки и сохраняет активные
-    function rollDices(){
-        setDices(prevDices => prevDices.map(die => die.isHeld ? die : genNewDie()))
-    }
-
-    //Начинает новую игру
-    function newGame(){
-        setTenzies(false)
-        setDices(allNewDices())
-    }
-
-    //Преобразует клетки в массив компонентов
-    const diceElements = dices.map((die) => 
-        <Die 
-            key={die.id} 
-            value={die.value} 
-            isHeld={die.isHeld} 
-            holdDice={()=>holdDice(die.id)}
-        />
-    )
 
     return(
         <div className="main">
-            {        
-                tenzies && 
-                <Confetti 
-                    width={useWindowSize.width} 
-                    height={useWindowSize.height} 
-                    recycle={false}
-                    numberOfPieces={500}
-                />
-            }
-            <section className="game">
-                <div className="game__block">
-                    <h2>Tenzies</h2>
-                    <p>Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
-                    <div className="game__field">
-                        {diceElements}
-                    </div>
-                    <button className="game__roll" onClick={tenzies ? newGame : rollDices}>
-                        {tenzies ? "New Game" : "Roll"}
-                    </button>
-                    
+            <header className="header">
+                <div className="container header__content">
+                    {
+                        gamemode && 
+                        <div 
+                            className="back main-button" 
+                            onClick={() => setGamemode(false)}
+                        >
+                            Back to menu
+                        </div>
+                    }
                 </div>
-            </section>
+            </header>
+            
+            {selectGamemode()}
         </div>
     )
 }

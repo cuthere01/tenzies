@@ -87,6 +87,7 @@ section{
 
 .game{
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
@@ -115,29 +116,12 @@ section{
         flex-direction: column;
         gap: 2rem;
         align-items: center;
+        min-width: 32rem;
     }
     &__field{
         display: grid;
         grid-template-columns: repeat(5,1fr);
         gap: 2rem;
-    }
-    &__roll{
-        font-size: 1.5rem;
-        font-weight: 500;
-        line-height: 120%;
-        text-align: center;
-        padding: .75rem 2rem;
-        background: $color;
-        color: #fff;
-        border: none;
-        cursor: pointer;
-        border-radius: .5rem;
-        &:focus{
-            outline: none;
-        }
-        &:active{
-            box-shadow: inset 5px 5px 10px -3px rgba(0, 0, 0, 0.7);
-        }
     }
 }
 .die{
@@ -156,7 +140,147 @@ section{
     box-shadow: 0px 4px 4px 0px #00000026;
     cursor: pointer;
     user-select: none;
+    transition: color .2s ease;
     &.active{
         background: #59E391;
+        pointer-events: none;
+    }
+    &.hidden{
+        color: transparent;
+    }
+    &.error{
+        background: #ffcccc;
+        animation: error .2s ease;
+    }
+    &.dis{
+        pointer-events: none;
+    }
+}
+@keyframes error {
+    0% {
+      transform: rotate(0deg);
+    }
+    12% {
+        transform: rotate(10);
+    }
+    25% {
+        transform: rotate(0deg);
+    }
+    37% {
+        transform: rotate(-10deg);
+    }
+    50% {
+        transform: rotate(0deg);
+    }
+    62% {
+        transform: rotate(10deg);
+    }
+    75% {
+        transform: rotate(0deg);
+    }
+    87% {
+        transform: rotate(-10deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+.grid2{
+    grid-template-columns: repeat(2,1fr);
+}
+.grid3{
+    grid-template-columns: repeat(3,1fr);
+}
+.grid4{
+    grid-template-columns: repeat(4,1fr);
+}
+.grid5{
+    grid-template-columns: repeat(5,1fr);
+}
+.grid6{
+    grid-template-columns: repeat(6,1fr);
+}
+.main-button{
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 120%;
+    text-align: center;
+    padding: .75rem 2rem;
+    background: $color;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: .5rem;
+    &:focus{
+        outline: none;
+    }
+    &:active{
+        box-shadow: inset 5px 5px 10px -3px rgba(0, 0, 0, 0.7);
+    }
+}
+.start{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2rem;
+    height: 100vh;
+    h2{
+        font-size: 2.5rem;
+        line-height: 120%;
+        font-weight: 700;
+        margin: 0;
+        color: #fff;
+    }
+    p{
+        font-size: 1.5rem;
+        line-height: 120%;
+        font-weight: 400;
+        margin: 0;
+        color: #fff;
+        text-align: center;
+        max-width: 28rem;
+    }
+    &__mode{
+        display: flex;
+        gap: 1.5rem;
+    }
+}
+.header{
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+    &__content{
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        display: flex;
+        justify-content: flex-end;
+        gap: 2rem;
+    }
+}
+.timer{
+    font-size: 7rem;
+    margin-top: -9rem;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    animation: pulsate 1s ease-out infinite;
+    @keyframes pulsate {
+        0% { 
+            opacity: 0;
+        }
+        10%{
+            opacity: 0;
+        }
+        15% {
+            opacity: 0.5;
+        }
+        80% {
+            opacity: 0;
+        }
+        100% { 
+            opacity: 0;
+        }
     }
 }
