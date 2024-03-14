@@ -80,13 +80,13 @@ export default function SimpleMode(props){
             }
             <section className="game">
                 <div className="game__block">
-                    <h2>Simple</h2>
-                    <p>Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
+                    <h2>{props.langText(3)}</h2>
+                    <p>{props.langText(13)}</p>
                     <div className="game__field">
                         {diceElements}
                     </div>
                     <button className="main-button" onClick={tenzies ? newGame : rollDices}>
-                        {tenzies ? "New Game" : "Roll"}
+                        {tenzies ? props.langText(11) : props.langText(14)}
                     </button>
                 </div>
             </section>

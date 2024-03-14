@@ -18,6 +18,6 @@ export default function Timer(props){
     }, [props.lvl])
 
     return (
-        <div className="timer">{sec}</div>
+        <div className="timer">{sec === 0 ? props.langText(12) : sec}</div>
     )
 }

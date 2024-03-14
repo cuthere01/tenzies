@@ -13,13 +13,13 @@ export default{
             "number": 2,
             "dices": 6,
             "cols": 3,
-            "time": 5
+            "time": 4
         },
         {
             "number": 3,
             "dices": 9,
             "cols": 3,
-            "time": 10
+            "time": 7
         },
         {
             "number": 4,
@@ -31,7 +31,7 @@ export default{
             "number": 5,
             "dices": 16,
             "cols": 4,
-            "time": 15
+            "time": 12
         },
     ]
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ClassicDie from "./ClassicDie"
 import { nanoid } from 'nanoid';
 import useWindowSize from 'react-use/lib/useWindowSize'
@@ -8,30 +8,32 @@ import Timer from './Timer';
 
 export default function SimpleMode(props){
 
-
     //Уровень
-    const [lvl, setLvl] = React.useState(1)
+    const [lvl, setLvl] = useState(1)
 
     //start game
-    const [startGame, setStartGame] = React.useState(0)
+    const [startGame, setStartGame] = useState(0)
 
     //Клетки
-    const [dices, setDices] = React.useState(allNewDices())
+    const [dices, setDices] = useState(allNewDices())
 
     //Прогресс игры
-    const [tenzies, setTenzies] = React.useState(false)
+    const [tenzies, setTenzies] = useState(false)
 
     //Текущее значение клетки
-    const [current, setCurrent] = React.useState(false)
+    const [current, setCurrent] = useState(false)
 
     //Таймер
-    const [toggleTimer, setToggleTimer] = React.useState(false)
+    const [toggleTimer, setToggleTimer] = useState(false)
 
     //Следит за прогрессом игры
-    React.useEffect(()=>{
+    useEffect(() => {
         const allHeld = dices.every(die => die.isHeld)
-        if(allHeld){
-            setTenzies(true)
+        const allRight = dices.every(die => !die.isError)
+        if(allHeld && allRight){
+            setTenzies(2)
+        } else if(allHeld){
+            setTenzies(1)
         }
     }, [dices])
 
@@ -43,19 +45,37 @@ export default function SimpleMode(props){
             isHidden: false,
             isError: false,
             isDis: true,
+            //isSuccess: false,
             id: nanoid()
         })
     }
 
-    //Создает 10 новых клеток
+    //Создает новые клетки
     function allNewDices(){
         const newDices = []
         for(let i=0; i<levelData.data[lvl-1].dices; i++){
             newDices.push(genNewDie())
         }
-        
         return newDices
     }
+
+    // //Подсвечивает успешную серию клеток
+    // function success(id){
+    //     let val = 0
+    //     dices.forEach(die => {
+    //         if(die.id === id){
+    //             val = die.value
+    //         }
+    //     })
+    //     dices.forEach(die => {
+    //         die.value === val && console.log(die.value)
+    //         setDices(prevDices => prevDices.map((die,i) => {
+    //             return die.value === val ? {...die, isSuccess: !die.isSuccess} : die
+    //         }))
+    //     })
+    //     //console.log(val)
+        
+    // }
     
     //Следит за текущей серией клеток
     function checkDices(){
@@ -65,8 +85,9 @@ export default function SimpleMode(props){
                 allCurrent.push(die)
             }
         })
-        if(allCurrent.every((die) => die.isHeld)){
+        if(allCurrent.every((die) => die.isHeld)) {
             setCurrent(false)
+            //success(allCurrent)
             return false
         }
         else return current
@@ -79,6 +100,7 @@ export default function SimpleMode(props){
             isHeld: isHeld, 
             isHidden: false,
             isError: isError,
+            //isSuccess: isSuccess
         })
     }
 
@@ -98,38 +120,44 @@ export default function SimpleMode(props){
                 return die
             }
         }))
+        //success(id)
+    }
+
+    //Очистка уровня
+    function clearLvl(){
+        setTenzies(false)
+        setCurrent(false)
+        setToggleTimer(prevToggleTimer => !prevToggleTimer)
+        setDices(allNewDices())
     }
 
     //Запускает следующий уровень
     function nextLvl(){
         setLvl(prevLvl => prevLvl + 1)
-        setTenzies(false)
-        setCurrent(false)
-        setToggleTimer(prevToggleTimer => !prevToggleTimer)
-
+        clearLvl()
     }
 
     //скрыть клетки
     function hideDices(){
         setDices(prevDices => prevDices.map(die => ({...die, isHidden: !die.isHidden, isDis: !die.isDis})))
-        setToggleTimer(prevToggleTimer => !prevToggleTimer)
+        setTimeout(() => {
+            setToggleTimer(prevToggleTimer => !prevToggleTimer)
+        }, 1000)
     }
 
     //начать игру
     function start(){
         setStartGame(1)
         setLvl(1)
-        setTenzies(false)
-        setCurrent(false)
-        setToggleTimer(prevToggleTimer => !prevToggleTimer)
+        clearLvl()
     }
 
     //нужен для обновления клеток при новом уровне
-    React.useEffect(() => {
+    useEffect(() => {
         setDices(allNewDices())
     }, [lvl])
 
-    //Преобразует клетки в массив компонентов
+    //Преобразует массив компонентов на основе клеток
     const diceElements = dices.map((die,i) => 
         <ClassicDie 
             key={die.id} 
@@ -138,6 +166,7 @@ export default function SimpleMode(props){
             isHidden={die.isHidden}
             isError={die.isError}
             isDis={die.isDis}
+            //isSuccess={die.isSuccess}
             holdDice={()=>holdDice(die.id)}
         />
     )
@@ -145,12 +174,13 @@ export default function SimpleMode(props){
     return(
         <div className="container">
             {        
-                tenzies && 
+                tenzies === 2 && 
                 <Confetti 
                     width={useWindowSize.width} 
                     height={useWindowSize.height} 
                     recycle={false}
-                    numberOfPieces={500}
+                    numberOfPieces={800}
+                    gravity={.3}
                 />
             }
             {
@@ -162,23 +192,30 @@ export default function SimpleMode(props){
                             time={levelData.data[lvl-1].time} 
                             lvl={lvl} 
                             hideDices={hideDices}
+                            langText={props.langText}
                         />
                     }
                     <div className="game__block">
-                        <h2>Level {lvl}</h2>
+                        <h2>{props.langText(8)} {lvl}</h2>
                         <div className={`game__field grid${levelData.data[lvl-1].cols}`}>
                             {diceElements}
                         </div>
                         {
-                            tenzies && lvl === levelData.info.NumberOfLevels &&
+                            tenzies === 2 && lvl === levelData.info.NumberOfLevels &&
                             <button className="main-button" onClick={() => start()}>
-                                New game
+                                {props.langText(11)}
                             </button>
                         }
                         {
-                            tenzies && lvl !== levelData.info.NumberOfLevels &&
+                            tenzies === 2 && lvl !== levelData.info.NumberOfLevels &&
                             <button className="main-button" onClick={() => nextLvl()}>
-                                Next level
+                               {props.langText(9)}
+                            </button>
+                        }
+                        {
+                            tenzies === 1 && 
+                            <button className="main-button" onClick={() => clearLvl()}>
+                                {props.langText(10)}
                             </button>
                         }
                         {/* <button className="main-button" onClick={() => hideDices()}>
@@ -189,10 +226,10 @@ export default function SimpleMode(props){
                 :
                 <section className="game">
                     <div className="game__block">
-                        <h2>Classic</h2>
-                        <p>Match dices!</p>
+                        <h2>{props.langText(4)}</h2>
+                        <p>{props.langText(6)}</p>
                         <button className="main-button" onClick={() => start()}>
-                            Start
+                            {props.langText(7)}
                         </button>
                     </div>
                 </section>
