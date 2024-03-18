@@ -123,6 +123,39 @@ section {
   grid-template-columns: repeat(5, 1fr);
   gap: 2rem;
 }
+.game form {
+  width: 100%;
+}
+
+.auth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+}
+.auth input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid rgb(133, 133, 133);
+  border-radius: 0.5rem;
+  font-size: 1.25rem;
+}
+.auth input:focus-visible {
+  border: 1px solid #5035FF;
+  outline: none;
+}
+.auth p {
+  color: rgb(133, 133, 133);
+}
+.auth__link {
+  cursor: pointer;
+  color: #000;
+  transition: all 0.2s ease;
+}
+.auth__link:hover {
+  color: #5035FF;
+}
 
 .die, .die-simple {
   width: 4rem;
@@ -271,6 +304,8 @@ section {
 }
 .start__mode {
   display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 1.5rem;
 }
 
@@ -339,29 +374,37 @@ section {
   }
 }
 
-.settings {
-  padding: 0.5rem;
+.selector__content {
+  overflow: hidden;
+  transition: all 0.2s ease;
+  width: calc(5.5rem + 42px);
+  opacity: 1;
 }
-.settings img {
+.selector__content.dis {
+  width: 0;
+  opacity: 0;
+}
+
+.icon-button {
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.icon-button img {
   height: 2.3rem;
   filter: invert(1) brightness(1000%);
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
 }
-.settings__content {
-  overflow: hidden;
-  transition: all 0.2s ease;
-  width: calc(6rem + 42px);
-  opacity: 1;
-}
-.settings__content.dis {
-  width: 0;
-  opacity: 0;
+
+.min-button {
+  padding: 0.75rem 1rem;
 }
 
-.back {
-  margin-right: 2rem;
+.mr-r {
+  margin-right: 1.5rem;
 }
 
 .lang {
@@ -400,6 +443,35 @@ section {
   left: 16px;
 }
 
+.account {
+  position: relative;
+}
+.account__content {
+  position: absolute;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: #fff;
+  top: 4.3rem;
+  transition: all 0.2s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+.account__content p {
+  line-height: 1.25rem;
+}
+.account__content.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.burger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 3.3rem;
+  width: 3.3rem;
+}
+
 @media (max-width: 769px) {
   .start h2 {
     font-size: 3.5rem;
@@ -413,6 +485,9 @@ section {
   .main-button {
     font-size: 2.5rem;
     padding: 1rem 2.5rem;
+  }
+  .min-button {
+    padding: 1rem 1rem;
   }
   .game h2 {
     font-size: 3.5rem;
@@ -441,16 +516,19 @@ section {
     height: 5.25rem;
     width: 18rem;
   }
-  .settings {
+  .selector__content {
+    width: calc(6.5rem + 42px);
+  }
+  .icon-button {
     padding: 0.75rem;
   }
-  .settings img {
+  .icon-button img {
     height: 3.5rem;
-  }
-  .settings__content {
-    width: calc(7rem + 42px);
   }
   .lang span {
     font-size: 1.5rem;
+  }
+  .auth input {
+    font-size: 1.75rem;
   }
 }/*# sourceMappingURL=style.css.map */

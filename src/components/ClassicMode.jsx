@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import  { React, useState, useEffect } from 'react';
 import ClassicDie from "./ClassicDie"
 import { nanoid } from 'nanoid';
 import useWindowSize from 'react-use/lib/useWindowSize'
 import Confetti from 'react-confetti'
-import levelData from './levelData';
+import levelData from '../data/levelData';
 import Timer from './Timer';
 
-export default function SimpleMode(props){
+export default function ClassicMode(props){
 
     //Уровень
     const [lvl, setLvl] = useState(1)
-
-    //start game
-    const [startGame, setStartGame] = useState(0)
 
     //Клетки
     const [dices, setDices] = useState(allNewDices())
@@ -24,7 +21,7 @@ export default function SimpleMode(props){
     const [current, setCurrent] = useState(false)
 
     //Таймер
-    const [toggleTimer, setToggleTimer] = useState(false)
+    const [toggleTimer, setToggleTimer] = useState(props.start)
 
     //Следит за прогрессом игры
     useEffect(() => {
@@ -32,7 +29,7 @@ export default function SimpleMode(props){
         const allRight = dices.every(die => !die.isError)
         if(allHeld && allRight){
             setTenzies(2)
-        } else if(allHeld){
+        } else if(allHeld || dices.find((die) => die.isError)){
             setTenzies(1)
         }
     }, [dices])
@@ -40,12 +37,11 @@ export default function SimpleMode(props){
     //Генерирует новую клетку
     function genNewDie(){
         return ({
-            value: Math.floor(Math.random()*6+1),
+            value: Math.floor(Math.random()*levelData.data[lvl-1].gen+1),
             isHeld: false,
             isHidden: false,
             isError: false,
             isDis: true,
-            //isSuccess: false,
             id: nanoid()
         })
     }
@@ -58,24 +54,6 @@ export default function SimpleMode(props){
         }
         return newDices
     }
-
-    // //Подсвечивает успешную серию клеток
-    // function success(id){
-    //     let val = 0
-    //     dices.forEach(die => {
-    //         if(die.id === id){
-    //             val = die.value
-    //         }
-    //     })
-    //     dices.forEach(die => {
-    //         die.value === val && console.log(die.value)
-    //         setDices(prevDices => prevDices.map((die,i) => {
-    //             return die.value === val ? {...die, isSuccess: !die.isSuccess} : die
-    //         }))
-    //     })
-    //     //console.log(val)
-        
-    // }
     
     //Следит за текущей серией клеток
     function checkDices(){
@@ -100,7 +78,6 @@ export default function SimpleMode(props){
             isHeld: isHeld, 
             isHidden: false,
             isError: isError,
-            //isSuccess: isSuccess
         })
     }
 
@@ -120,7 +97,6 @@ export default function SimpleMode(props){
                 return die
             }
         }))
-        //success(id)
     }
 
     //Очистка уровня
@@ -147,7 +123,6 @@ export default function SimpleMode(props){
 
     //начать игру
     function start(){
-        setStartGame(1)
         setLvl(1)
         clearLvl()
     }
@@ -166,8 +141,8 @@ export default function SimpleMode(props){
             isHidden={die.isHidden}
             isError={die.isError}
             isDis={die.isDis}
-            //isSuccess={die.isSuccess}
             holdDice={()=>holdDice(die.id)}
+            
         />
     )
 
@@ -183,57 +158,44 @@ export default function SimpleMode(props){
                     gravity={.3}
                 />
             }
-            {
-                startGame ? 
-                <section className="game">
+            <section className="game">
+                {
+                    (toggleTimer) &&
+                    <Timer 
+                        time={levelData.data[lvl-1].time} 
+                        lvl={lvl} 
+                        hideDices={hideDices}
+                        langText={props.langText}
+                    />
+                }
+                <div className="game__block">
+                    <h2>{props.langText(8)} {lvl}</h2>
+                    <div className={`game__field grid${levelData.data[lvl-1].cols}`}>
+                        {diceElements}
+                    </div>
                     {
-                        toggleTimer &&
-                        <Timer 
-                            time={levelData.data[lvl-1].time} 
-                            lvl={lvl} 
-                            hideDices={hideDices}
-                            langText={props.langText}
-                        />
-                    }
-                    <div className="game__block">
-                        <h2>{props.langText(8)} {lvl}</h2>
-                        <div className={`game__field grid${levelData.data[lvl-1].cols}`}>
-                            {diceElements}
-                        </div>
-                        {
-                            tenzies === 2 && lvl === levelData.info.NumberOfLevels &&
-                            <button className="main-button" onClick={() => start()}>
-                                {props.langText(11)}
-                            </button>
-                        }
-                        {
-                            tenzies === 2 && lvl !== levelData.info.NumberOfLevels &&
-                            <button className="main-button" onClick={() => nextLvl()}>
-                               {props.langText(9)}
-                            </button>
-                        }
-                        {
-                            tenzies === 1 && 
-                            <button className="main-button" onClick={() => clearLvl()}>
-                                {props.langText(10)}
-                            </button>
-                        }
-                        {/* <button className="main-button" onClick={() => hideDices()}>
-                            hide
-                        </button> */}
-                    </div>
-                </section>
-                :
-                <section className="game">
-                    <div className="game__block">
-                        <h2>{props.langText(4)}</h2>
-                        <p>{props.langText(6)}</p>
+                        tenzies === 2 && lvl === levelData.info.NumberOfLevels &&
                         <button className="main-button" onClick={() => start()}>
-                            {props.langText(7)}
+                            {props.langText(11)}
                         </button>
-                    </div>
-                </section>
-            }
+                    }
+                    {
+                        tenzies === 2 && lvl !== levelData.info.NumberOfLevels &&
+                        <button className="main-button" onClick={() => nextLvl()}>
+                            {props.langText(9)}
+                        </button>
+                    }
+                    {
+                        tenzies === 1 &&
+                        <button className="main-button" onClick={() => clearLvl()}>
+                            {props.langText(10)}
+                        </button>
+                    }
+                    {/* <button className="main-button" onClick={() => hideDices()}>
+                        hide
+                    </button> */}
+                </div>
+            </section>  
         </div>
     )
 }

@@ -1,24 +1,60 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SimpleMode from './components/SimpleMode';
 import ClassicMode from './components/ClassicMode'
-import langPack from './components/langPack';
+import langPack from './data/langPack';
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "./data/firebase";
+import SignIn from './components/auth/SignIn';
+import SignUp from './components/auth/SignUp';
+import AuthDetails from './components/auth/AuthDetails';
 
 export default function App(){
 
-    //Gamemode
+    //Режим игры
     const [gamemode, setGamemode] = useState(false)
 
-    //Язык
+    //Селектор языка
     const [lang, setLang] = useState(false)
 
     //Настройки
     const [settings, setSettings] = useState(false)
 
-    //текст
+    //Статус авторизации юзера
+    const [authUser, setAuthUser] = useState(null);
+
+    //вызов формы авторизации
+    const [authForm, setAuthForm] = useState(false)
+
+    //вызов формы регистрации
+    const [regForm, setRegForm] = useState(false)
+
+    //начать игру
+    const [start, setStart] = useState(false)
+
+    //вкл/выкл форму регистрации
+    function openReg(){
+        setRegForm(prevRegForm => !prevRegForm)
+    }
+
+    //Использование списка фраз
     function langText(id){
         return lang ? langPack.ru[id] : langPack.en[id]
     }
+
+    //Следит за изменением статуса авторизации
+    useEffect(() => {
+        const listen = onAuthStateChanged(auth, (user) => {
+          if (user) {
+            setAuthUser(user);
+          } else {
+            setAuthUser(null);
+          }
+        });
+        return () => {
+          listen();
+        };
+      }, []);
 
     function selectGamemode(){
         switch(gamemode){
@@ -27,9 +63,42 @@ export default function App(){
                     <SimpleMode langText={langText}/>
                 )
             case 2:
-                return (
-                    <ClassicMode langText={langText}/>
-                )
+                return start ?
+                <ClassicMode langText={langText} start={start}/>
+                :
+                <section className="game">
+                    {
+                        authForm ?
+                        <div className="game__block">
+                            {
+                                regForm ?
+                                <SignUp langText={langText} openReg={()=>openReg()} />
+                                :
+                                <SignIn langText={langText} openReg={()=>openReg()} />
+                            }
+                        </div>
+                        :
+                        <div className="game__block">
+                            <h2>{langText(4)}</h2>
+                            <p>{langText(6)}</p>
+                            {
+                                authUser ?
+                                <button className="main-button" onClick={() => setStart(true)}>
+                                    {langText(17)}
+                                </button>
+                                :
+                                <div className="start__mode">
+                                    <button className="main-button" onClick={() => setStart(true)}>
+                                        {langText(7)}
+                                    </button>
+                                    <button className="main-button" onClick={() => setAuthForm(true)}>
+                                        {langText(15)}
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    }
+                </section>
             default:
                 return (
                     <div className="container">
@@ -60,15 +129,23 @@ export default function App(){
                     <div className="header__right">
                         <div className="header__shad"></div>
                         {
-                            gamemode && 
-                            <div 
-                                className="main-button back" 
-                                onClick={() => setGamemode(false)}
-                            >
-                               {langText(5)}
-                            </div>
+                            gamemode ? 
+                                <div 
+                                    className="main-button min-button mr-r" 
+                                    onClick={() => {
+                                        setGamemode(false)
+                                        setAuthForm(false)
+                                        setRegForm(false)
+                                        setStart(false)
+                                    }}
+                                >
+                                {langText(5)}
+                                </div>
+                            :
+                                <AuthDetails authUser={authUser}/>
                         }
-                        <div className={`settings__content ${!settings ? "dis" : ""}`}>
+                        {/* <AuthDetails/> */}
+                        <div className={`selector__content ${!settings ? "dis" : ""}`}>
                             <div className="lang">
                                 <span>en</span>
                                 <div className="lang__switcher" onClick={() => setLang(prevLang => !prevLang)}>
@@ -77,13 +154,18 @@ export default function App(){
                                 <span>ru</span>
                             </div>
                         </div>
-                        <div className="main-button settings" onClick={() => setSettings(prevSettings => !prevSettings)}>
-                            <img src="./media/settings.svg"/>
+                        <div className="main-button icon-button" onClick={() => setSettings(prevSettings => !prevSettings)}>
+                            <img src="./media/settings.svg" alt=""/>
                         </div>
                     </div>
                 </div>
             </header>
             {selectGamemode()}
+            <div className="container" style={{background: "white"}}>
+                {/* <SignUp/>
+                <SignIn/>
+                <AuthDetails authUser={authUser}/> */}
+            </div>
         </div>
     )
 }
