@@ -1,6 +1,6 @@
 @charset "UTF-8";
 *, body, h1, h2, h3, h4, h5, h6, p, span, a, li {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Roboto Mono", "Montserrat", sans-serif;
 }
 
 html {
@@ -377,7 +377,7 @@ section {
 .selector__content {
   overflow: hidden;
   transition: all 0.2s ease;
-  width: calc(5.5rem + 42px);
+  width: calc(4.75rem + 42px);
   opacity: 1;
 }
 .selector__content.dis {
@@ -397,6 +397,9 @@ section {
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
+}
+.icon-button span {
+  white-space: nowrap;
 }
 
 .min-button {
@@ -455,21 +458,75 @@ section {
   transition: all 0.2s ease;
   opacity: 0;
   pointer-events: none;
+  right: -4.8rem;
 }
 .account__content p {
-  line-height: 1.25rem;
+  font-size: 1rem;
+  margin: 0;
+  color: rgb(133, 133, 133);
 }
 .account__content.active {
   opacity: 1;
   pointer-events: all;
 }
+.account__content div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.account__action {
+  color: #000;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.account__action:hover {
+  color: #5035FF;
+}
 
-.burger {
+.notificator {
+  position: fixed;
+  z-index: 200;
+  width: 100%;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  top: -100px;
+}
+.notificator div {
+  box-shadow: 0px 0px 20px 0px rgb(176, 197, 222);
+  background: #fff;
+  border-radius: 5rem;
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 3.3rem;
-  width: 3.3rem;
+  gap: 1rem;
+  padding: 1rem 2rem;
+}
+.notificator div span {
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 120%;
+  color: #000;
+}
+.notificator div img {
+  width: 5rem;
+}
+.notificator.active {
+  animation: myAnim 3s ease 0s 1 normal forwards;
+}
+@keyframes myAnim {
+  0% {
+    top: -100px;
+  }
+  10% {
+    top: 8rem;
+  }
+  90% {
+    top: 8rem;
+  }
+  100% {
+    top: -100px;
+  }
 }
 
 @media (max-width: 769px) {
@@ -517,7 +574,7 @@ section {
     width: 18rem;
   }
   .selector__content {
-    width: calc(6.5rem + 42px);
+    width: calc(5.75rem + 42px);
   }
   .icon-button {
     padding: 0.75rem;
@@ -530,5 +587,18 @@ section {
   }
   .auth input {
     font-size: 1.75rem;
+  }
+  .account__content {
+    right: -6.5rem;
+    top: 6.3rem;
+  }
+  .account__content p {
+    font-size: 1.5rem;
+  }
+  .notificator div span {
+    font-size: 1.5rem;
+  }
+  .notificator div img {
+    width: 3.5rem;
   }
 }/*# sourceMappingURL=style.css.map */

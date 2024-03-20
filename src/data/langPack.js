@@ -26,7 +26,10 @@ const langPack ={
         24: "Repeat password",
         25: "Create",
         26: "Already have an account?",
-
+        27: "Signed in as",
+        28: "Sign out",
+        29: "You are signed out",
+        30: "or"
     },
     "ru": {
         1: "Приветствуем в Tenzies!",
@@ -55,6 +58,10 @@ const langPack ={
         24: "Повторите пароль",
         25: "Создать",
         26: "Уже есть аккаунт?",
+        27: "Вы вошли как",
+        28: "Выйти",
+        29: "Вы вышли из аккаунта",
+        30: "или",
     }
 }
 

@@ -1,5 +1,5 @@
 *,body,h1,h2,h3,h4,h5,h6,p,span,a,li{
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Roboto Mono', 'Montserrat', sans-serif;
 }
 html {
     scroll-behavior: smooth;
@@ -379,7 +379,7 @@ section{
     &__content{
         overflow: hidden;
         transition: all .2s ease;
-        width: calc(5.5rem + 42px);
+        width: calc(4.75rem + 42px);
         opacity: 1;
         &.dis{
             width: 0;
@@ -396,6 +396,9 @@ section{
         height: 2.3rem;
         filter: invert(1) brightness(1000%);
         user-select: none;
+    }
+    span{
+        white-space: nowrap;
     }
 }
 .min-button{
@@ -456,22 +459,77 @@ section{
         transition: all .2s ease;
         opacity: 0;
         pointer-events: none;
+        right: -4.8rem;
         p{
-            line-height: 1.25rem;
+            font-size: 1rem;
+            margin: 0;
+            color: rgb(133, 133, 133);
         }
         &.active{
             opacity: 1;
             pointer-events: all;
         }
+        div{
+            display: flex;
+            flex-direction: column;
+            gap: .75rem;
+        }
+    }
+    &__action{
+        color: #000;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: all .2s ease;
+        &:hover{
+            color: $color;
+        }
     }
 
 }
-.burger{
+.notificator{
+    position: fixed;
+    z-index: 200;
+    width: 100%;
+    pointer-events: none;
     display: flex;
-    align-items: center;
     justify-content: center;
-    height: 3.3rem;
-    width: 3.3rem;
+    top: -100px;
+    div{
+        box-shadow: 0px 0px 20px 0px rgba(176, 197, 222, 1);
+        background: #fff;
+        border-radius: 5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 2rem;
+        span{
+            font-size: 2rem;
+            font-weight: 400;
+            line-height: 120%;
+            color: #000;
+        }
+        img{
+            width: 5rem;
+        }
+    }
+
+    &.active{
+        animation: myAnim 3s ease 0s 1 normal forwards;
+        @keyframes myAnim {
+            0% {
+                top: -100px
+            }
+            10% {
+                top: 8rem;
+            }
+            90% {
+                top: 8rem;
+            }
+            100% {
+                top: -100px;
+            }
+        }
+    }
 }
 
 @media (max-width: 769px){
@@ -526,7 +584,7 @@ section{
     }
     .selector{
         &__content{
-            width: calc(6.5rem + 42px);
+            width: calc(5.75rem + 42px);
         }
     }
     .icon-button{
@@ -543,6 +601,23 @@ section{
     .auth{
         input{
             font-size: 1.75rem;
+        }
+    }
+    .account{
+        &__content{
+            p{
+                font-size: 1.5rem;
+            }
+            right: -6.5rem;
+            top: 6.3rem 
+        }
+    }
+    .notificator div{
+        span{
+            font-size: 1.5rem;
+        }
+        img{
+            width: 3.5rem;
         }
     }
 }

@@ -20,14 +20,25 @@ const AuthDetails = (props) => {
       <div className={`account__content ${account ? "active" : ""}`}>
         {props.authUser ? (
           <div>
-            <p>{`Signed in as ${props.authUser.email}`}</p>
-            <button className="main-button icon-button" onClick={userSignOut}>
-              <span>Logout</span>
-              {/* <img src="./media/logout.svg" alt="" /> */}
-            </button>
+            <p>
+              {`${props.langText(27)} ${props.authUser.email}`}
+              <br />
+              <span className="account__action" onClick={userSignOut}>{props.langText(28)}</span>
+            </p>
+            
           </div>
         ) : (
-          "Signed Out"
+          <div>
+            <p>
+              {props.langText(29)}
+              <br />
+              <span className="account__action" onClick={props.openAuth}>
+                {props.langText(15)}
+              </span>&nbsp;{props.langText(30)} <span className="account__action" onClick={props.openAuth}>
+                {props.langText(22)}
+              </span>
+            </p>
+          </div>
         )}
       </div>
       

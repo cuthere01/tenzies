@@ -37,6 +37,11 @@ export default function App(){
         setRegForm(prevRegForm => !prevRegForm)
     }
 
+    //вкл/выкл форму авторизации
+    function openAuth(){
+        setAuthForm(prevAuthForm => !prevAuthForm)
+    }
+
     //Использование списка фраз
     function langText(id){
         return lang ? langPack.ru[id] : langPack.en[id]
@@ -45,16 +50,32 @@ export default function App(){
     //Следит за изменением статуса авторизации
     useEffect(() => {
         const listen = onAuthStateChanged(auth, (user) => {
-          if (user) {
-            setAuthUser(user);
-          } else {
-            setAuthUser(null);
-          }
+            if (user) {
+                setAuthUser(user);
+            } else {
+                setAuthUser(null);
+            }
         });
         return () => {
-          listen();
+            listen();
         };
-      }, []);
+    }, []);
+
+    //Вывод авторизации и регистрации
+    function authReg(){
+        return (
+            <div className="game">
+                <div className="game__block">
+                    {
+                        regForm ?
+                        <SignUp langText={langText} openReg={()=>openReg()} />
+                        :
+                        <SignIn langText={langText} openReg={()=>openReg()} />
+                    }
+                </div>
+            </div>
+        )
+    }
 
     function selectGamemode(){
         switch(gamemode){
@@ -67,37 +88,25 @@ export default function App(){
                 <ClassicMode langText={langText} start={start}/>
                 :
                 <section className="game">
-                    {
-                        authForm ?
-                        <div className="game__block">
-                            {
-                                regForm ?
-                                <SignUp langText={langText} openReg={()=>openReg()} />
-                                :
-                                <SignIn langText={langText} openReg={()=>openReg()} />
-                            }
-                        </div>
-                        :
-                        <div className="game__block">
-                            <h2>{langText(4)}</h2>
-                            <p>{langText(6)}</p>
-                            {
-                                authUser ?
+                    <div className="game__block">
+                        <h2>{langText(4)}</h2>
+                        <p>{langText(6)}</p>
+                        {
+                            authUser ?
+                            <button className="main-button" onClick={() => setStart(true)}>
+                                {langText(17)}
+                            </button>
+                            :
+                            <div className="start__mode">
                                 <button className="main-button" onClick={() => setStart(true)}>
-                                    {langText(17)}
+                                    {langText(7)}
                                 </button>
-                                :
-                                <div className="start__mode">
-                                    <button className="main-button" onClick={() => setStart(true)}>
-                                        {langText(7)}
-                                    </button>
-                                    <button className="main-button" onClick={() => setAuthForm(true)}>
-                                        {langText(15)}
-                                    </button>
-                                </div>
-                            }
-                        </div>
-                    }
+                                <button className="main-button" onClick={() => setAuthForm(true)}>
+                                    {langText(15)}
+                                </button>
+                            </div>
+                        }
+                    </div>
                 </section>
             default:
                 return (
@@ -129,7 +138,7 @@ export default function App(){
                     <div className="header__right">
                         <div className="header__shad"></div>
                         {
-                            gamemode ? 
+                            gamemode || authForm ? 
                                 <div 
                                     className="main-button min-button mr-r" 
                                     onClick={() => {
@@ -142,7 +151,7 @@ export default function App(){
                                 {langText(5)}
                                 </div>
                             :
-                                <AuthDetails authUser={authUser}/>
+                                <AuthDetails langText={langText} authUser={authUser} openAuth={()=>openAuth()}/>
                         }
                         {/* <AuthDetails/> */}
                         <div className={`selector__content ${!settings ? "dis" : ""}`}>
@@ -160,11 +169,11 @@ export default function App(){
                     </div>
                 </div>
             </header>
-            {selectGamemode()}
-            <div className="container" style={{background: "white"}}>
-                {/* <SignUp/>
-                <SignIn/>
-                <AuthDetails authUser={authUser}/> */}
+            {authForm ? authReg() : selectGamemode()}
+            <div class="notificator">
+                <div>
+                    <span>auth</span>
+                </div>
             </div>
         </div>
     )

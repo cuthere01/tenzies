@@ -38,7 +38,7 @@ const SignIn = (props) => {
         />
         <button className="main-button" onClick={logIn}>{props.langText(15)}</button>
         {error && <p className="auth__error">{error}</p>}
-        <p>{props.langText(21)} <span className="auth__link" onClick={props.openReg}>{props.langText(15)}</span></p>
+        <p>{props.langText(21)} <span className="auth__link" onClick={props.openReg}>{props.langText(25)}</span></p>
       </div>
     </form>
   );
