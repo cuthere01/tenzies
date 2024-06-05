@@ -167,7 +167,7 @@ export default function App(){
             <header className="header">
                 <div className="container header__content">
                     <div className="header__logo">
-                        <img src="./tenzies/media/cuthere-react-logo.svg" alt="" />
+                        <img src="./media/cuthere-react-logo.svg" alt="" />
                     </div>
                     <div className="header__right">
                         <div className="header__shad"></div>
@@ -190,7 +190,7 @@ export default function App(){
                         {/* <AuthDetails/> */}
                         <div className={`selector__content ${!settings ? "dis" : ""}`}>
                             <button className="volume" onClick={() => setVolume(prevVolume => !prevVolume)}>
-                                <img src={`./tenzies/media/${volume ? "volume" : "mute"}.svg`} alt="" />
+                                <img src={`./media/${volume ? "volume" : "mute"}.svg`} alt="" />
                             </button>
                             
                             <div className="lang">
@@ -202,7 +202,7 @@ export default function App(){
                             </div>
                         </div>
                         <button className="main-button icon-button" onClick={() => setSettings(prevSettings => !prevSettings)}>
-                            <img src="./tenzies/media/settings.svg" alt=""/>
+                            <img src="./media/settings.svg" alt=""/>
                         </button>
                     </div>
                 </div>

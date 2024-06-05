@@ -15,7 +15,7 @@ const AuthDetails = (props) => {
     
     <div className="account mr-r">
       <button className="main-button icon-button" onClick={() => setAccount(prevAccount => !prevAccount)}>
-        <img src="./tenzies/media/user.svg" alt="" />
+        <img src="./media/user.svg" alt="" />
       </button>
       <div className={`account__content ${account ? "active" : ""}`}>
         {props.authUser ? (
