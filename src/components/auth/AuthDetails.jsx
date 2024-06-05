@@ -15,7 +15,7 @@ const AuthDetails = (props) => {
     
     <div className="account mr-r">
       <button className="main-button icon-button" onClick={() => setAccount(prevAccount => !prevAccount)}>
-        <img src="./media/user.svg" alt="" />
+        <img src="./tenzies/media/user.svg" alt="" />
       </button>
       <div className={`account__content ${account ? "active" : ""}`}>
         {props.authUser ? (
@@ -34,7 +34,7 @@ const AuthDetails = (props) => {
               <br />
               <span className="account__action" onClick={props.openAuth}>
                 {props.langText(15)}
-              </span>&nbsp;{props.langText(30)} <span className="account__action" onClick={props.openAuth}>
+              </span>&nbsp;{props.langText(30)} <span className="account__action" onClick={props.openReg}>
                 {props.langText(22)}
               </span>
             </p>

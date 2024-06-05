@@ -3,11 +3,20 @@ import React, { useState, useEffect } from 'react';
 import SimpleMode from './components/SimpleMode';
 import ClassicMode from './components/ClassicMode'
 import langPack from './data/langPack';
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./data/firebase";
 import SignIn from './components/auth/SignIn';
 import SignUp from './components/auth/SignUp';
 import AuthDetails from './components/auth/AuthDetails';
+import { userDataCollection, db } from "./data/firebase";
+import Notificator from './components/Notificator';
+import { 
+    onSnapshot, 
+    doc, 
+    addDoc, 
+    deleteDoc,
+    setDoc 
+} from "firebase/firestore"
 
 export default function App(){
 
@@ -21,7 +30,7 @@ export default function App(){
     const [settings, setSettings] = useState(false)
 
     //Статус авторизации юзера
-    const [authUser, setAuthUser] = useState(null);
+    const [authUser, setAuthUser] = useState(null)
 
     //вызов формы авторизации
     const [authForm, setAuthForm] = useState(false)
@@ -31,6 +40,27 @@ export default function App(){
 
     //начать игру
     const [start, setStart] = useState(false)
+
+    //вкл/выкл звук
+    const [volume, setVolume] = useState(true)
+
+    //вызов нотификатора
+    const [notice, setNotice] = useState({
+        active: false,
+        uid: false,
+    })
+
+    //Показ нотификатора
+    const showNotificator = (uid) => {
+        setNotice(prevNotice => ({
+            active: !prevNotice.active,
+            uid: uid,
+        }))
+        setTimeout(() => setNotice(prevNotice => ({
+            ...prevNotice,
+            active: !prevNotice.active,
+        })), 3000)
+    }
 
     //вкл/выкл форму регистрации
     function openReg(){
@@ -52,6 +82,10 @@ export default function App(){
         const listen = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setAuthUser(user);
+                showNotificator(user.email)
+                setAuthForm(false)
+                //console.log(user)
+                
             } else {
                 setAuthUser(null);
             }
@@ -64,7 +98,7 @@ export default function App(){
     //Вывод авторизации и регистрации
     function authReg(){
         return (
-            <div className="game">
+            <div className="game container">
                 <div className="game__block">
                     {
                         regForm ?
@@ -87,7 +121,7 @@ export default function App(){
                 return start ?
                 <ClassicMode langText={langText} start={start}/>
                 :
-                <section className="game">
+                <section className="game container">
                     <div className="game__block">
                         <h2>{langText(4)}</h2>
                         <p>{langText(6)}</p>
@@ -133,7 +167,7 @@ export default function App(){
             <header className="header">
                 <div className="container header__content">
                     <div className="header__logo">
-                        <img src="./media/cuthere-react-logo.svg" alt="" />
+                        <img src="./tenzies/media/cuthere-react-logo.svg" alt="" />
                     </div>
                     <div className="header__right">
                         <div className="header__shad"></div>
@@ -151,10 +185,14 @@ export default function App(){
                                 {langText(5)}
                                 </div>
                             :
-                                <AuthDetails langText={langText} authUser={authUser} openAuth={()=>openAuth()}/>
+                                <AuthDetails langText={langText} authUser={authUser} openAuth={()=>{openAuth()}} openReg={()=>{openAuth();openReg()}}/>
                         }
                         {/* <AuthDetails/> */}
                         <div className={`selector__content ${!settings ? "dis" : ""}`}>
+                            <button className="volume" onClick={() => setVolume(prevVolume => !prevVolume)}>
+                                <img src={`./tenzies/media/${volume ? "volume" : "mute"}.svg`} alt="" />
+                            </button>
+                            
                             <div className="lang">
                                 <span>en</span>
                                 <div className="lang__switcher" onClick={() => setLang(prevLang => !prevLang)}>
@@ -163,18 +201,14 @@ export default function App(){
                                 <span>ru</span>
                             </div>
                         </div>
-                        <div className="main-button icon-button" onClick={() => setSettings(prevSettings => !prevSettings)}>
-                            <img src="./media/settings.svg" alt=""/>
-                        </div>
+                        <button className="main-button icon-button" onClick={() => setSettings(prevSettings => !prevSettings)}>
+                            <img src="./tenzies/media/settings.svg" alt=""/>
+                        </button>
                     </div>
                 </div>
             </header>
             {authForm ? authReg() : selectGamemode()}
-            <div class="notificator">
-                <div>
-                    <span>auth</span>
-                </div>
-            </div>
+            <Notificator langText={langText} notice={notice.active} uid={notice.uid}/>
         </div>
     )
 }

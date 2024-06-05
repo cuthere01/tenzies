@@ -29,7 +29,8 @@ const langPack ={
         27: "Signed in as",
         28: "Sign out",
         29: "You are signed out",
-        30: "or"
+        30: "or",
+        31: "Welcome",
     },
     "ru": {
         1: "Приветствуем в Tenzies!",
@@ -62,6 +63,7 @@ const langPack ={
         28: "Выйти",
         29: "Вы вышли из аккаунта",
         30: "или",
+        31: "Добро пожаловать"
     }
 }
 

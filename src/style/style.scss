@@ -378,9 +378,11 @@ section{
 .selector{
     &__content{
         overflow: hidden;
+        display: flex;
         transition: all .2s ease;
-        width: calc(4.75rem + 42px);
+        width: calc(6.25rem + 66px);
         opacity: 1;
+        gap: 1.5rem;
         &.dis{
             width: 0;
             opacity: 0;
@@ -520,15 +522,33 @@ section{
                 top: -100px
             }
             10% {
-                top: 8rem;
+                top: 6rem;
             }
             90% {
-                top: 8rem;
+                top: 6rem;
             }
             100% {
                 top: -100px;
             }
         }
+    }
+}
+.volume{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    img{
+        width: 100%;
+        filter: invert(1) brightness(1000%);
+    }
+    &:focus-visible,&:focus{
+        outline: none;
     }
 }
 
@@ -584,7 +604,7 @@ section{
     }
     .selector{
         &__content{
-            width: calc(5.75rem + 42px);
+            width: calc(10rem + 42px);
         }
     }
     .icon-button{

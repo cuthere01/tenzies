@@ -1,4 +1,4 @@
-export default{
+const levelData = {
     "info": {
         "NumberOfLevels": 5
     },
@@ -40,3 +40,4 @@ export default{
         },
     ]
 }
+export default levelData;

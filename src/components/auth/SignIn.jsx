@@ -1,5 +1,5 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { auth } from "../../data/firebase";
 
 const SignIn = (props) => {
@@ -10,16 +10,17 @@ const SignIn = (props) => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((user) => {
-        console.log(user);
+        //console.log(user.user.email);
         setError("");
         setEmail("");
         setPassword("");
       })
         .catch((error) => {
             console.log(error);
-            setError("SORRY, COULDN'T FIND YOUR ACCOUNT")
+            setError("Sorry, couldn't find your account")
       });
   }
+
   return (
     <form>
       <div className="auth">
