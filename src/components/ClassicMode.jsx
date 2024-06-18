@@ -5,11 +5,12 @@ import useWindowSize from 'react-use/lib/useWindowSize'
 import Confetti from 'react-confetti'
 import levelData from '../data/levelData';
 import Timer from './Timer';
+import useSound from 'use-sound';
 
 export default function ClassicMode(props){
 
     //Уровень
-    const [lvl, setLvl] = useState(1)
+    const [lvl, setLvl] = useState(props.userLvl)
 
     //Клетки
     const [dices, setDices] = useState(allNewDices())
@@ -29,10 +30,18 @@ export default function ClassicMode(props){
         const allRight = dices.every(die => !die.isError)
         if(allHeld && allRight){
             setTenzies(2)
+            props.updLvl(lvl + 1);
+            // console.log('win');
+            props.win();
         } else if(allHeld || dices.find((die) => die.isError)){
             setTenzies(1)
         }
     }, [dices])
+
+    // const [pop] = useSound(
+    //     './media/pop.mp3',
+    //     { volume: 0.1 }
+    // );
 
     //Генерирует новую клетку
     function genNewDie(){
@@ -109,8 +118,9 @@ export default function ClassicMode(props){
 
     //Запускает следующий уровень
     function nextLvl(){
-        setLvl(prevLvl => prevLvl + 1)
-        clearLvl()
+        setLvl(prevLvl => prevLvl + 1);
+        // props.updLvl();
+        clearLvl();
     }
 
     //скрыть клетки
@@ -142,7 +152,8 @@ export default function ClassicMode(props){
             isError={die.isError}
             isDis={die.isDis}
             holdDice={()=>holdDice(die.id)}
-            
+            pop={props.pop}
+            err={props.err}
         />
     )
 
@@ -156,8 +167,8 @@ export default function ClassicMode(props){
                     recycle={false}
                     numberOfPieces={800}
                     gravity={.3}
-                />
-            }
+                /> 
+            } 
             <section className="game">
                 {
                     (toggleTimer) &&
@@ -175,19 +186,19 @@ export default function ClassicMode(props){
                     </div>
                     {
                         tenzies === 2 && lvl === levelData.info.NumberOfLevels &&
-                        <button className="main-button" onClick={() => start()}>
+                        <button className="main-button" onClick={() => {start(); props.boop()}}>
                             {props.langText(11)}
                         </button>
                     }
                     {
                         tenzies === 2 && lvl !== levelData.info.NumberOfLevels &&
-                        <button className="main-button" onClick={() => nextLvl()}>
+                        <button className="main-button" onClick={() => {nextLvl(); props.boop()}}>
                             {props.langText(9)}
                         </button>
                     }
                     {
                         tenzies === 1 &&
-                        <button className="main-button" onClick={() => clearLvl()}>
+                        <button className="main-button" onClick={() => {clearLvl(); props.boop()}}>
                             {props.langText(10)}
                         </button>
                     }

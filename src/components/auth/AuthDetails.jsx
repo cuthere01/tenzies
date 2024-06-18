@@ -1,5 +1,5 @@
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import React, { useEffect, useState } from "react";
+import { signOut } from "firebase/auth";
+import React, { useState } from "react";
 import { auth } from "../../data/firebase";
 
 const AuthDetails = (props) => {

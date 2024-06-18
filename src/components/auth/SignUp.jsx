@@ -15,11 +15,12 @@ const SignUp = (props) => {
     }
     createUserWithEmailAndPassword(auth, email, password)
       .then((user) => {
-        console.log(user);
+        console.log(user.user.email, user.user.uid);
         setError("");
         setEmail("");
         setCopyPassword("");
         setPassword("");
+        props.created(user.user.email, user.user.uid);
       })
       .catch((error) => console.log(error));
   }

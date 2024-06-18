@@ -550,6 +550,10 @@ section {
   outline: none;
 }
 
+.test li {
+  color: #fff;
+}
+
 @media (max-width: 769px) {
   .start h2 {
     font-size: 3.5rem;

@@ -4,19 +4,22 @@ import SimpleMode from './components/SimpleMode';
 import ClassicMode from './components/ClassicMode'
 import langPack from './data/langPack';
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./data/firebase";
 import SignIn from './components/auth/SignIn';
 import SignUp from './components/auth/SignUp';
 import AuthDetails from './components/auth/AuthDetails';
-import { userDataCollection, db } from "./data/firebase";
 import Notificator from './components/Notificator';
+import useSound from 'use-sound';
+import { db, auth } from "./data/firebase";
 import { 
-    onSnapshot, 
+    onSnapshot,
+    collection,
     doc, 
     addDoc, 
     deleteDoc,
-    setDoc 
-} from "firebase/firestore"
+    setDoc,
+    updateDoc,
+} from "firebase/firestore";
+//import functions from 'firebase-functions';
 
 export default function App(){
 
@@ -29,7 +32,7 @@ export default function App(){
     //Настройки
     const [settings, setSettings] = useState(false)
 
-    //Статус авторизации юзера
+    //Авторизованный пользователь
     const [authUser, setAuthUser] = useState(null)
 
     //вызов формы авторизации
@@ -43,6 +46,46 @@ export default function App(){
 
     //вкл/выкл звук
     const [volume, setVolume] = useState(true)
+
+    //уровень игрока
+    const [userLvl, setUserLvl] = useState(1)
+
+    //данные о пользователях
+    const [userData, setUserData] = useState([])
+
+    //получение данных о пользователях
+    useEffect(() => onSnapshot(
+        collection(db, "userData"), 
+        (snapshot) => setUserData(snapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id
+        })))
+    ), [authUser])
+
+    //Добавить данные о новом пользователе
+    const handleNew = async (email, uid) => {
+        const classicModeLvl = 1;
+        const payload = { email, classicModeLvl };
+        await setDoc(doc(db, "userData", uid), payload);
+    };
+
+    //Звук нажатия на кнопку
+    const [boop] = useSound(
+        './media/boop.wav',
+        { volume: 0.15 }
+    );
+
+    //Звук нажатия на кубик
+    const [pop] = useSound(
+        './media/pop.mp3',
+        { volume: 0.15 }
+    );
+
+    //Звук победы
+    const [winner] = useSound(
+        './media/win.mp3',
+        { volume: 0.1 }
+    );
 
     //вызов нотификатора
     const [notice, setNotice] = useState({
@@ -82,9 +125,9 @@ export default function App(){
         const listen = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setAuthUser(user);
-                showNotificator(user.email)
-                setAuthForm(false)
-                //console.log(user)
+                showNotificator(user.email);
+                setAuthForm(false);
+                // console.log(user);
                 
             } else {
                 setAuthUser(null);
@@ -102,7 +145,7 @@ export default function App(){
                 <div className="game__block">
                     {
                         regForm ?
-                        <SignUp langText={langText} openReg={()=>openReg()} />
+                        <SignUp langText={langText} openReg={()=>openReg()} created={handleNew} />
                         :
                         <SignIn langText={langText} openReg={()=>openReg()} />
                     }
@@ -111,15 +154,49 @@ export default function App(){
         )
     }
 
+    //загрузить уровень пользователя
+    useEffect(() => {
+        setUserLvl(prevUserLvl => {
+            let temp = 1;
+            if(authUser && userData){
+                userData.forEach(data => {
+                    if(data.id === authUser.uid) temp = data.classicModeLvl;
+                })
+            }
+            return temp;
+        })
+    }, [authUser, userData])
+
+    //присвоить пользователю новый уровень
+    const updLvl = async (newLvl) => {
+        if(authUser){
+            const docRef = doc(db, "userData", authUser.uid);
+            await updateDoc(docRef, {
+                classicModeLvl: newLvl,
+            });
+        }
+    }
+
+    //Выбор режима игры
     function selectGamemode(){
+        
         switch(gamemode){
             case 1:
                 return (
                     <SimpleMode langText={langText}/>
                 )
             case 2:
+                //loadUserLvl();
                 return start ?
-                <ClassicMode langText={langText} start={start}/>
+                <ClassicMode 
+                    langText={langText} 
+                    start={start} 
+                    boop={() => volume && boop()}
+                    pop={() => volume && pop()}
+                    win={() => volume && winner()}
+                    userLvl={userLvl}
+                    updLvl={updLvl}
+                />
                 :
                 <section className="game container">
                     <div className="game__block">
@@ -127,15 +204,15 @@ export default function App(){
                         <p>{langText(6)}</p>
                         {
                             authUser ?
-                            <button className="main-button" onClick={() => setStart(true)}>
+                            <button className="main-button" onClick={() => {setStart(true); volume && boop();}}>
                                 {langText(17)}
                             </button>
                             :
                             <div className="start__mode">
-                                <button className="main-button" onClick={() => setStart(true)}>
+                                <button className="main-button" onClick={() => {setStart(true); volume && boop();}}>
                                     {langText(7)}
                                 </button>
-                                <button className="main-button" onClick={() => setAuthForm(true)}>
+                                <button className="main-button" onClick={() => {setAuthForm(true); volume && boop();}}>
                                     {langText(15)}
                                 </button>
                             </div>
@@ -149,13 +226,23 @@ export default function App(){
                             <h2>{langText(1)}</h2>
                             <p>{langText(2)}</p>
                             <div className="start__mode">
-                                <button className="main-button" onClick={() => setGamemode(1)}>
+                                <button className="main-button" onClick={() => {setGamemode(1); volume && boop();}}>
                                     {langText(3)}
                                 </button>
-                                <button className="main-button" onClick={() => setGamemode(2)}>
+                                <button className="main-button" onClick={() => {setGamemode(2); volume && boop();}}>
                                     {langText(4)}
                                 </button>
                             </div>
+                            {/* <div className="test container">
+                                <button onClick={() => handleNew}>
+                                    New
+                                </button>
+                                <ul>
+                                    {userData.map((data) => (
+                                        <li key={data.id}>{data.email}: {data.classicModeLvl}</li>           
+                                    ))}
+                                </ul>
+                            </div>  */}
                         </section>
                     </div>
                 )
@@ -176,10 +263,11 @@ export default function App(){
                                 <div 
                                     className="main-button min-button mr-r" 
                                     onClick={() => {
-                                        setGamemode(false)
-                                        setAuthForm(false)
-                                        setRegForm(false)
-                                        setStart(false)
+                                        setGamemode(false);
+                                        setAuthForm(false);
+                                        setRegForm(false);
+                                        setStart(false);
+                                        volume && boop();
                                     }}
                                 >
                                 {langText(5)}
@@ -189,7 +277,7 @@ export default function App(){
                         }
                         {/* <AuthDetails/> */}
                         <div className={`selector__content ${!settings ? "dis" : ""}`}>
-                            <button className="volume" onClick={() => setVolume(prevVolume => !prevVolume)}>
+                            <button className="volume" onClick={() => {setVolume(prevVolume => !prevVolume); boop()}}>
                                 <img src={`./media/${volume ? "volume" : "mute"}.svg`} alt="" />
                             </button>
                             
@@ -201,7 +289,7 @@ export default function App(){
                                 <span>ru</span>
                             </div>
                         </div>
-                        <button className="main-button icon-button" onClick={() => setSettings(prevSettings => !prevSettings)}>
+                        <button className="main-button icon-button" onClick={() => {setSettings(prevSettings => !prevSettings)}}>
                             <img src="./media/settings.svg" alt=""/>
                         </button>
                     </div>
