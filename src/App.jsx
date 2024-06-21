@@ -19,7 +19,7 @@ import {
     setDoc,
     updateDoc,
 } from "firebase/firestore";
-//import functions from 'firebase-functions';
+import Background from './components/Background';
 
 export default function App(){
 
@@ -84,7 +84,13 @@ export default function App(){
     //Звук победы
     const [winner] = useSound(
         './media/win.mp3',
-        { volume: 0.1 }
+        { volume: 0.15 }
+    );
+
+    //Звук поражения
+    const [gameover] = useSound(
+        './media/gameover.wav',
+        { volume: 0.15 }
     );
 
     //вызов нотификатора
@@ -194,6 +200,7 @@ export default function App(){
                     boop={() => volume && boop()}
                     pop={() => volume && pop()}
                     win={() => volume && winner()}
+                    gover={() => volume && gameover()}
                     userLvl={userLvl}
                     updLvl={updLvl}
                 />
@@ -249,8 +256,10 @@ export default function App(){
         }
     }
 
+
     return(
         <div className={`main ${lang? "ru" : "en"}`}>
+            {!start && <Background/>}
             <header className="header">
                 <div className="container header__content">
                     <div className="header__logo">

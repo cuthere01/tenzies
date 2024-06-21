@@ -31,10 +31,10 @@ export default function ClassicMode(props){
         if(allHeld && allRight){
             setTenzies(2)
             props.updLvl(lvl + 1);
-            // console.log('win');
             props.win();
         } else if(allHeld || dices.find((die) => die.isError)){
             setTenzies(1)
+            props.gover();
         }
     }, [dices])
 

@@ -92,6 +92,8 @@ section{
     justify-content: center;
     width: 100%;
     min-height: 100vh;
+    z-index: 2;
+    position: relative;
     h2{
         font-size: 2.5rem;
         line-height: 120%;
@@ -269,6 +271,7 @@ section{
     border: none;
     cursor: pointer;
     border-radius: .5rem;
+    pointer-events: all;
     &:focus{
         outline: none;
     }
@@ -283,6 +286,7 @@ section{
     flex-direction: column;
     gap: 2rem;
     height: 100vh;
+    pointer-events: none;
     h2{
         font-size: 2.5rem;
         line-height: 120%;
@@ -290,6 +294,7 @@ section{
         margin: 0;
         color: #fff;
         text-align: center;
+        text-shadow: #0B2434 1px 0 20px;
     }
     p{
         font-size: 1.5rem;
@@ -299,6 +304,7 @@ section{
         color: #fff;
         text-align: center;
         max-width: 28rem;
+        text-shadow: #0B2434 1px 0 20px;
     }
     &__mode{
         display: flex;
@@ -311,6 +317,7 @@ section{
     position: fixed;
     width: 100%;
     z-index: 100;
+    pointer-events: none;
     &__content{
         padding-top: 1rem;
         padding-bottom: 1rem;
@@ -322,7 +329,7 @@ section{
         display: flex;
         align-items: center;
         z-index: 1;
-        background: #0B2434;
+        pointer-events: all;
     }
     &__logo{
         height: 3.5rem;
@@ -347,6 +354,7 @@ section{
         display: flex;
         background: linear-gradient(to right, transparent 0%, rgba(11, 36, 52, 1) 70%, rgba(11, 36, 52, 1) 100%);
         margin-left: -4rem;
+        display: none;
     }
 }
 .timer{
@@ -509,9 +517,7 @@ section{
             font-weight: 400;
             line-height: 120%;
             color: #000;
-        }
-        img{
-            width: 5rem;
+            text-align: center;
         }
     }
 
@@ -556,8 +562,42 @@ section{
         color: #fff;
     }
 }
+.background{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100dvh;
+    width: 100dvw;
+    z-index: 0;
+    &__shad{
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(11, 36, 52, 0.3);
+        z-index: 1;
+        pointer-events: none;
+    }
+    .cube{
+        width: 6rem;
+        height: 6rem;
+        border-radius: .75rem;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        font-weight: 700;
+        line-height: 120%;
+        text-align: center;
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.1490196078);
+        position: absolute;
+        cursor: pointer;
+    }
+}
 
-@media (max-width: 769px){
+@media (max-width: 768px){
     .start{
         h2{
             font-size: 3.5rem;
@@ -606,6 +646,12 @@ section{
             height: 5.25rem;
             width: 18rem;
         }
+        &__right{
+            background: #0B2434;
+        }
+        &__shad{
+            display: block;
+        }
     }
     .selector{
         &__content{
@@ -637,12 +683,32 @@ section{
             top: 6.3rem 
         }
     }
-    .notificator div{
-        span{
-            font-size: 1.5rem;
+    .notificator{
+        div{
+            span {
+                    font-size: 2rem;
+            }
         }
-        img{
-            width: 3.5rem;
+        &.active {
+            animation: myAnim 3s ease 0s 1 normal forwards;
+
+            @keyframes myAnim {
+                0% {
+                    top: -100px
+                }
+
+                10% {
+                    top: 8rem;
+                }
+
+                90% {
+                    top: 8rem;
+                }
+
+                100% {
+                    top: -100px;
+                }
+            }
         }
     }
 }
