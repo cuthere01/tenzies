@@ -5,7 +5,6 @@ import useWindowSize from 'react-use/lib/useWindowSize'
 import Confetti from 'react-confetti'
 import levelData from '../data/levelData';
 import Timer from './Timer';
-import useSound from 'use-sound';
 
 export default function ClassicMode(props){
 
